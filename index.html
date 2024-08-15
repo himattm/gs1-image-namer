@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GS1 Image Renamer</title>
     <style>
+        /* Base styles (light mode by default) */
         body {
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 20px;
+            background-color: #ffffff;
+            color: #000000;
         }
         .tabs {
             display: flex;
@@ -40,6 +43,7 @@
             padding: 10px;
             text-align: center;
             height: 100px;
+            background-color: #f9f9f9;
         }
         .grid div img {
             max-width: 100%;
@@ -48,6 +52,41 @@
         button {
             padding: 10px 20px;
             font-size: 16px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Dark mode styles */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #1e1e1e;
+                color: #ffffff;
+            }
+            .tabs div {
+                border: 1px solid #555;
+                background-color: #333;
+            }
+            .tabs div.active {
+                background-color: #1e1e1e;
+                border-bottom: 1px solid #1e1e1e;
+                font-weight: bold;
+            }
+            .grid div {
+                border: 2px dashed #555;
+                background-color: #2c2c2c;
+            }
+            button {
+                background-color: #007bff;
+                color: #ffffff;
+            }
+            button:hover {
+                background-color: #0056b3;
+            }
         }
     </style>
 </head>
