@@ -16,7 +16,7 @@ function populateTabs() {
       console.log(`Adding tab for: ${schemeKey}`); // Log the schemeKey to see if it's being processed
 
       const tab = document.createElement('div');
-      tab.textContent = `Scheme ${index + 1}`; // Display scheme number as tab label
+      tab.textContent = schemeNames[schemeKey]; // Display scheme number as tab label
       
       if (schemeKey === 'scheme1') {
           tab.classList.add('active'); // Only add 'active' if it's the first scheme
@@ -33,7 +33,7 @@ function setActiveTab(schemeKey) {
     const tabs = document.querySelectorAll('.tabs div');
     tabs.forEach(tab => {
         // Highlight the active tab and remove the highlight from others
-        if (tab.textContent.includes(schemeKey.split('scheme')[1])) {
+        if (tab.textContent === schemeNames[schemeKey]) {
             tab.classList.add('active');
         } else {
             tab.classList.remove('active');
