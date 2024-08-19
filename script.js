@@ -8,24 +8,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Function to dynamically populate tabs based on the schemes object
 function populateTabs() {
-  const tabsContainer = document.getElementById('tabs');
-  tabsContainer.innerHTML = ''; // Clear existing tabs
+    const tabsContainer = document.getElementById('tabs');
+    tabsContainer.innerHTML = ''; // Clear existing tabs
 
-  // Iterate over each scheme in the schemes object
-  Object.keys(schemes).forEach((schemeKey, index) => {
-      console.log(`Adding tab for: ${schemeKey}`); // Log the schemeKey to see if it's being processed
+    // Iterate over each scheme in the schemes object
+    Object.keys(schemes).forEach((schemeKey, index) => {
+        console.log(`Adding tab for: ${schemeKey}`); // Log the schemeKey to see if it's being processed
 
-      const tab = document.createElement('div');
-      tab.textContent = schemeNames[schemeKey]; // Display scheme number as tab label
-      
-      if (schemeKey === 'scheme1') {
-          tab.classList.add('active'); // Only add 'active' if it's the first scheme
-      }
+        const tab = document.createElement('div');
+        tab.textContent = schemeNames[schemeKey]; // Display scheme name as tab label
+        
+        if (schemeKey === 'scheme1') {
+            tab.classList.add('active'); // Only add 'active' if it's the first scheme
+        }
 
-      tab.addEventListener('click', () => changeScheme(schemeKey)); // Add click event to switch schemes
+        tab.addEventListener('click', () => changeScheme(schemeKey)); // Add click event to switch schemes
 
-      tabsContainer.appendChild(tab); // Append the tab to the tabs container
-  });
+        tabsContainer.appendChild(tab); // Append the tab to the tabs container
+    });
 }
 
 // Function to set the active tab by highlighting the selected one
@@ -49,6 +49,7 @@ function createGrid(scheme) {
     // Iterate over each item in the selected scheme to create grid elements
     scheme.forEach(item => {
         const div = document.createElement('div');
+        div.className = 'grid-cell'; // Apply the grid-cell class
         div.setAttribute('data-token', item.token); // Set the token as a data attribute
         div.textContent = item.name; // Display the name in the grid cell
 
@@ -82,6 +83,12 @@ function handleDrop(e) {
 
     const targetElement = e.currentTarget;
 
+    // Add the loading spinner
+    const spinner = document.createElement('div');
+    spinner.className = 'spinner';
+    targetElement.innerHTML = ''; // Clear any existing content
+    targetElement.appendChild(spinner);
+
     if (fileExtension === 'tif' || fileExtension === 'tiff') {
         const reader = new FileReader();
         reader.onload = function(event) {
@@ -101,8 +108,8 @@ function handleDrop(e) {
                 img.src = canvas.toDataURL();
                 img.style.maxWidth = '100%';
                 img.style.maxHeight = '100%';
-                targetElement.innerHTML = '';
-                targetElement.appendChild(img);
+                targetElement.innerHTML = ''; // Clear the spinner
+                targetElement.appendChild(img); // Append the image
             } catch (error) {
                 console.error("Error processing TIFF file:", error);
                 targetElement.innerHTML = 'Error displaying image';
@@ -115,8 +122,8 @@ function handleDrop(e) {
         img.src = URL.createObjectURL(file);
         img.style.maxWidth = '100%';
         img.style.maxHeight = '100%';
-        targetElement.innerHTML = '';
-        targetElement.appendChild(img);
+        targetElement.innerHTML = ''; // Clear the spinner
+        targetElement.appendChild(img); // Append the image
     }
 }
 

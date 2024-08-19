@@ -38,19 +38,45 @@ body {
     margin-bottom: 20px;
 }
 
-.grid div {
+.grid div.grid-cell {
+    position: relative; 
     border: 2px dashed #ccc;
     padding: 10px;
-    text-align: center;
     height: 100px;
+    text-align: center;
     background-color: #f9f9f9;
+
+    /* Add flexbox properties for centering */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.grid div img {
+.grid div.grid-cell img {
     max-width: 100%;
     max-height: 100%;
 }
 
+/* Simplified spinner styles */
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.2); /* Light grey border */
+    border-top: 4px solid #007bff; /* Blue border for the spinning part */
+    border-radius: 50%;
+    width: 30px; /* Adjusted size for better visibility */
+    height: 30px; /* Adjusted size for better visibility */
+    animation: spin 1s linear infinite; /* Continuous spinning */
+    position: absolute; /* Absolute positioning to center in the grid */
+    background-color: transparent; /* Ensure no background color */
+    box-shadow: none; /* Remove any box shadow */
+    z-index: 10; /* Ensure the spinner appears above other elements */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Button styles */
 button {
     padding: 10px 20px;
     font-size: 16px;
@@ -107,9 +133,14 @@ footer a:hover {
         font-weight: bold;
     }
 
-    .grid div {
+    .grid div.grid-cell {
         border: 2px dashed #555;
         background-color: #2c2c2c;
+    }
+
+    .spinner {
+        border: 4px solid rgba(0, 0, 0, 0.2); /* Dark grey border for dark mode */
+        border-top: 4px solid #66aaff; /* Lighter blue for better contrast in dark mode */
     }
 
     button {
