@@ -70,20 +70,42 @@ function changeScheme(schemeKey) {
 
 // Function to handle image drop events
 function handleDrop(e) {
-    e.preventDefault();
+    e.preventDefault(); // Prevent the default behavior
+
     const token = e.currentTarget.getAttribute('data-token'); // Get the token from the drop target
-    const file = e.dataTransfer.files[0]; // Get the dropped file
+    const file = e.dataTransfer.files[0]; // Get the first file that was dropped
     if (!file) return; // Exit if no file was dropped
 
-    files[token] = file; // Store the file with its corresponding token
+    files[token] = file; // Store the file in the files object, associated with its token
 
-    // Create an image preview and display it in the grid cell
-    const img = document.createElement('img');
-    img.src = URL.createObjectURL(file);
-    img.style.maxWidth = '100%';
-    img.style.maxHeight = '100%';
-    e.currentTarget.innerHTML = ''; // Clear the grid cell content
-    e.currentTarget.appendChild(img); // Append the image preview
+    const fileExtension = file.name.split('.').pop().toLowerCase(); // Get the file extension and convert it to lowercase
+
+    const targetElement = e.currentTarget; // Capture the target element reference
+
+    // Check if the file is a TIFF image
+    if (fileExtension === 'tif' || fileExtension === 'tiff') {
+        const reader = new FileReader(); // Create a new FileReader to read the file as an ArrayBuffer
+        reader.onload = function(event) {
+            const buffer = event.target.result; // Get the ArrayBuffer from the FileReader
+            const tiff = new Tiff({ buffer }); // Create a new Tiff object from the buffer
+            const canvas = tiff.toCanvas(); // Convert the TIFF image to a canvas element
+            const img = document.createElement('img'); // Create a new img element
+            img.src = canvas.toDataURL(); // Convert the canvas to a data URL and set it as the img src
+            img.style.maxWidth = '100%'; // Ensure the image fits within the grid cell
+            img.style.maxHeight = '100%'; // Ensure the image fits within the grid cell
+            targetElement.innerHTML = ''; // Clear any existing content in the grid cell
+            targetElement.appendChild(img); // Append the image to the grid cell
+        };
+        reader.readAsArrayBuffer(file); // Read the file as an ArrayBuffer
+    } else {
+        // Handle non-TIFF images (e.g., PNG, JPEG)
+        const img = document.createElement('img'); // Create a new img element
+        img.src = URL.createObjectURL(file); // Create a data URL for the image and set it as the img src
+        img.style.maxWidth = '100%'; // Ensure the image fits within the grid cell
+        img.style.maxHeight = '100%'; // Ensure the image fits within the grid cell
+        targetElement.innerHTML = ''; // Clear any existing content in the grid cell
+        targetElement.appendChild(img); // Append the image to the grid cell
+    }
 }
 
 // Function to download renamed images as a ZIP file
