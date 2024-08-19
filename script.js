@@ -72,39 +72,51 @@ function changeScheme(schemeKey) {
 function handleDrop(e) {
     e.preventDefault(); // Prevent the default behavior
 
-    const token = e.currentTarget.getAttribute('data-token'); // Get the token from the drop target
-    const file = e.dataTransfer.files[0]; // Get the first file that was dropped
-    if (!file) return; // Exit if no file was dropped
+    const token = e.currentTarget.getAttribute('data-token');
+    const file = e.dataTransfer.files[0];
+    if (!file) return;
 
-    files[token] = file; // Store the file in the files object, associated with its token
+    files[token] = file;
 
-    const fileExtension = file.name.split('.').pop().toLowerCase(); // Get the file extension and convert it to lowercase
+    const fileExtension = file.name.split('.').pop().toLowerCase();
 
-    const targetElement = e.currentTarget; // Capture the target element reference
+    const targetElement = e.currentTarget;
 
-    // Check if the file is a TIFF image
     if (fileExtension === 'tif' || fileExtension === 'tiff') {
-        const reader = new FileReader(); // Create a new FileReader to read the file as an ArrayBuffer
+        const reader = new FileReader();
         reader.onload = function(event) {
-            const buffer = event.target.result; // Get the ArrayBuffer from the FileReader
-            const tiff = new Tiff({ buffer }); // Create a new Tiff object from the buffer
-            const canvas = tiff.toCanvas(); // Convert the TIFF image to a canvas element
-            const img = document.createElement('img'); // Create a new img element
-            img.src = canvas.toDataURL(); // Convert the canvas to a data URL and set it as the img src
-            img.style.maxWidth = '100%'; // Ensure the image fits within the grid cell
-            img.style.maxHeight = '100%'; // Ensure the image fits within the grid cell
-            targetElement.innerHTML = ''; // Clear any existing content in the grid cell
-            targetElement.appendChild(img); // Append the image to the grid cell
+            try {
+                const arrayBuffer = event.target.result;
+                const ifds = UTIF.decode(arrayBuffer); // Decode the TIFF file
+                UTIF.decodeImage(arrayBuffer, ifds[0]); // Decode the first image frame
+                const rgba = UTIF.toRGBA8(ifds[0]); // Convert the image to RGBA format
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = ifds[0].width;
+                canvas.height = ifds[0].height;
+                const imgData = ctx.createImageData(canvas.width, canvas.height);
+                imgData.data.set(rgba);
+                ctx.putImageData(imgData, 0, 0);
+                const img = document.createElement('img');
+                img.src = canvas.toDataURL();
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '100%';
+                targetElement.innerHTML = '';
+                targetElement.appendChild(img);
+            } catch (error) {
+                console.error("Error processing TIFF file:", error);
+                targetElement.innerHTML = 'Error displaying image';
+            }
         };
         reader.readAsArrayBuffer(file); // Read the file as an ArrayBuffer
     } else {
         // Handle non-TIFF images (e.g., PNG, JPEG)
-        const img = document.createElement('img'); // Create a new img element
-        img.src = URL.createObjectURL(file); // Create a data URL for the image and set it as the img src
-        img.style.maxWidth = '100%'; // Ensure the image fits within the grid cell
-        img.style.maxHeight = '100%'; // Ensure the image fits within the grid cell
-        targetElement.innerHTML = ''; // Clear any existing content in the grid cell
-        targetElement.appendChild(img); // Append the image to the grid cell
+        const img = document.createElement('img');
+        img.src = URL.createObjectURL(file);
+        img.style.maxWidth = '100%';
+        img.style.maxHeight = '100%';
+        targetElement.innerHTML = '';
+        targetElement.appendChild(img);
     }
 }
 
