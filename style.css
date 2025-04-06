@@ -1,167 +1,230 @@
 /* Base styles (light mode by default) */
+:root {
+    --dragover-bg-color: #e0e0e0; /* Light grey for light mode */
+    --grid-cell-bg-color: #f9f9f9;
+    --grid-cell-border-color: #ccc;
+    --tab-bg-color: #f0f0f0;
+    --tab-active-bg-color: #ffffff;
+    --tab-border-color: #ccc;
+    --footer-bg-color: #f0f0f0;
+    --footer-text-color: #888888;
+    --footer-link-color: #888888;
+    --footer-link-hover-color: #666666;
+    --body-bg-color: #ffffff;
+    --body-text-color: #000000;
+    --loading-bg-color: rgba(255, 255, 255, 0.8);
+    --loading-text-color: #333;
+    --spinner-border-light: rgba(0, 0, 0, 0.1);
+    --spinner-border-top: #007bff;
+    --button-disabled-bg: #cccccc;
+    --button-disabled-text: initial; /* Use browser default */
+    /* REMOVED --options-text-color */
+}
+
+
 body {
     font-family: Arial, sans-serif;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Ensure the body takes up at least 100% of the viewport height */
+    min-height: 100vh;
     margin: 0;
-    background-color: #ffffff;
-    color: #000000;
+    padding: 20px; /* Add some padding */
+    box-sizing: border-box; /* Include padding in width/height */
+    background-color: var(--body-bg-color);
+    color: var(--body-text-color);
+    position: relative;
 }
+
+/* Style for the loading indicator container */
+.loading-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--loading-bg-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-indicator p {
+    margin-top: 15px;
+    font-size: 16px;
+    color: var(--loading-text-color);
+}
+
 
 .tabs {
     display: flex;
     margin-bottom: 20px;
     cursor: pointer;
+    flex-wrap: wrap; /* Allow tabs to wrap on smaller screens */
 }
 
 .tabs div {
     padding: 10px 20px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--tab-border-color);
     border-bottom: none;
-    background-color: #f0f0f0;
+    background-color: var(--tab-bg-color);
     margin-right: 2px;
+    margin-bottom: 2px; /* Add margin for wrapped tabs */
+    transition: background-color 0.2s ease, border-color 0.2s ease; /* Smooth transitions */
 }
 
 .tabs div.active {
-    background-color: #ffffff;
-    border-bottom: 1px solid #ffffff;
+    background-color: var(--tab-active-bg-color);
+    border-bottom: 1px solid var(--tab-active-bg-color);
     font-weight: bold;
 }
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    /* Responsive grid columns */
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Adjust minmax as needed */
     gap: 10px;
     margin-bottom: 20px;
+    width: 100%; /* Make grid take full width */
+    max-width: 800px; /* Optional: Set a max-width for larger screens */
 }
+
 
 .grid div.grid-cell {
     position: relative; 
-    border: 2px dashed #ccc;
+    border: 2px dashed var(--grid-cell-border-color);
     padding: 10px;
-    height: 100px;
+    /* Maintain aspect ratio (e.g., 1:1) */
+    aspect-ratio: 1 / 1;
+    height: auto; /* Override fixed height */
     text-align: center;
-    background-color: #f9f9f9;
-
-    /* Add flexbox properties for centering */
+    background-color: var(--grid-cell-bg-color);
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: background-color 0.2s ease, border-color 0.2s ease; /* Smooth transition for background */
+    overflow: hidden; /* Prevent content overflow */
+    font-size: 14px; /* Adjust font size if needed */
 }
+
+
+/* Add style for when dragging over */
+.grid div.grid-cell.dragover {
+    background-color: var(--dragover-bg-color);
+    border-style: solid; /* Make border solid during dragover */
+}
+
 
 .grid div.grid-cell img {
     max-width: 100%;
     max-height: 100%;
+    object-fit: contain; /* Ensure image fits within the box */
 }
 
-/* Simplified spinner styles */
+/* Updated spinner styles */
 .spinner {
-    border: 4px solid rgba(255, 255, 255, 0.2); /* Light grey border */
-    border-top: 4px solid #007bff; /* Blue border for the spinning part */
+    border: 5px solid var(--spinner-border-light);
+    border-top: 5px solid var(--spinner-border-top);
     border-radius: 50%;
-    width: 30px; /* Adjusted size for better visibility */
-    height: 30px; /* Adjusted size for better visibility */
-    animation: spin 1s linear infinite; /* Continuous spinning */
-    position: absolute; /* Absolute positioning to center in the grid */
-    background-color: transparent; /* Ensure no background color */
-    box-shadow: none; /* Remove any box shadow */
-    z-index: 10; /* Ensure the spinner appears above other elements */
+    /* Adjust size relative to cell */
+    width: min(50px, 40%); 
+    height: min(50px, 40%);
+    animation: spin 1s linear infinite;
+    background-color: transparent;
+    box-shadow: none;
 }
+
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
 
+/* REMOVED Options container styling */
+/* .options { ... } */
+/* .options label { ... } */
+
 /* Button styles */
 button {
+    margin-bottom: 15px; /* Add margin below button now that options div is gone */
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #007bff;
+    background-color: #007bff; /* Keep button color consistent for now */
     color: #ffffff;
     border: none;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+    border-radius: 4px; /* Slightly rounded corners */
 }
 
-button:hover {
+button:hover:not(:disabled) {
     background-color: #0056b3;
 }
 
+button:disabled {
+    background-color: var(--button-disabled-bg);
+    color: var(--button-disabled-text);
+    cursor: not-allowed;
+}
+
+
 /* Sticky footer styling */
 footer {
-    margin-top: auto; /* Push the footer to the bottom of the page */
+    margin-top: auto; /* Push the footer to the bottom */
     font-size: 12px;
-    color: #888888;
+    color: var(--footer-text-color);
     text-align: center;
-    padding: 10px 0;
+    padding: 15px 0; /* Increased padding */
     width: 100%;
-    background-color: #f0f0f0; /* Match the footer background with the tabs */
+    background-color: var(--footer-bg-color);
+    transition: background-color 0.2s ease, color 0.2s ease; /* Smooth transitions */
+    position: sticky; /* Make footer sticky */
+    bottom: 0; /* Stick to the bottom */
 }
+
 
 footer p {
     margin: 0;
 }
 
 footer a {
-    color: #888888;
+    color: var(--footer-link-color);
     text-decoration: none;
+    transition: color 0.2s ease;
 }
 
 footer a:hover {
     text-decoration: none;
-    color: #666666;
+    color: var(--footer-link-hover-color);
 }
 
 /* Dark mode styles */
 @media (prefers-color-scheme: dark) {
-    body {
-        background-color: #1e1e1e;
-        color: #ffffff;
+    :root {
+        --dragover-bg-color: #4a4a4a; /* Darker grey for dark mode */
+        --grid-cell-bg-color: #2c2c2c;
+        --grid-cell-border-color: #555;
+        --tab-bg-color: #333;
+        --tab-active-bg-color: #1e1e1e;
+        --tab-border-color: #555;
+        --footer-bg-color: #1e1e1e;
+        --footer-text-color: #aaaaaa;
+        --footer-link-color: #aaaaaa;
+        --footer-link-hover-color: #cccccc;
+        --body-bg-color: #1e1e1e;
+        --body-text-color: #ffffff;
+        --loading-bg-color: rgba(30, 30, 30, 0.8);
+        --loading-text-color: #ccc;
+        --spinner-border-light: rgba(255, 255, 255, 0.1);
+        --spinner-border-top: #66aaff;
+        --button-disabled-bg: #555;
+        --button-disabled-text: #aaa;
+        /* REMOVED --options-text-color */
     }
 
-    .tabs div {
-        border: 1px solid #555;
-        background-color: #333;
-    }
-
-    .tabs div.active {
-        background-color: #1e1e1e;
-        border-bottom: 1px solid #1e1e1e;
-        font-weight: bold;
-    }
-
-    .grid div.grid-cell {
-        border: 2px dashed #555;
-        background-color: #2c2c2c;
-    }
-
-    .spinner {
-        border: 4px solid rgba(0, 0, 0, 0.2); /* Dark grey border for dark mode */
-        border-top: 4px solid #66aaff; /* Lighter blue for better contrast in dark mode */
-    }
-
-    button {
-        background-color: #007bff;
-        color: #ffffff;
-    }
-
-    button:hover {
-        background-color: #0056b3;
-    }
-
-    footer {
-        background-color: #1e1e1e;
-        color: #aaaaaa;
-    }
-
-    footer a {
-        color: #aaaaaa;
-    }
-
-    footer a:hover {
-        color: #888888;
-    }
+     /* No need to redeclare body, .grid-cell etc. rules here, */
+     /* the variable overrides defined above will apply automatically. */
 }

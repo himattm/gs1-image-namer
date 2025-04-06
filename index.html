@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>GS1 Image Renamer</h1>
-    
+
     <div id="tabs" class="tabs">
         <!-- Tabs will be dynamically populated by JavaScript -->
     </div>
@@ -16,9 +16,16 @@
     <div id="gridContainer" class="grid">
         <!-- Grid items will be dynamically generated here -->
     </div>
+
     
-    <button onclick="downloadImages()">Download Renamed Images</button>
-    
+    <button id="downloadButton" onclick="downloadImages()">Download Renamed Images</button>
+
+    <!-- Loading indicator -->
+    <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+        <div class="spinner"></div>
+        <p>Processing images...</p>
+    </div>
+
     <!-- Subtle footer with a random emoji -->
     <footer>
         <p>Made with <span id="emoji">✨</span> by <a href="https://github.com/himattm/gs1-image-namer" target="_blank">himattm</a></p>
@@ -39,7 +46,14 @@
     <script>
         window.onload = function() {
             populateTabs();
-            changeScheme('scheme1');
+            // Find the first scheme key correctly
+            const firstSchemeKey = Object.keys(schemes)[0];
+             if (firstSchemeKey) {
+                 changeScheme(firstSchemeKey);
+             } else {
+                 console.error("No schemes found to display.");
+                 document.getElementById('gridContainer').innerHTML = '<p>Error: No naming schemes defined in schemes.js</p>';
+             }
         };
     </script>
 </body>
